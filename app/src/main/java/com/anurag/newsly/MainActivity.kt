@@ -4,44 +4,37 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.anurag.newsly.ui.theme.NewslyTheme
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.anurag.newsly.data.repository.NewsRepositoryImpl
+import com.anurag.newsly.domain.usecase.GetHeadlinesUseCase
+import com.anurag.newsly.presentation.navigation.NewsNavGraph
+import com.anurag.newsly.presentation.viewmodel.NewsViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NewslyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+
+            val navController = rememberNavController()
+
+            val repository = NewsRepositoryImpl()
+            val useCase = GetHeadlinesUseCase(repository)
+
+            val viewModel: NewsViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                        return NewsViewModel(useCase) as T
+                    }
                 }
-            }
+            )
+
+            NewsNavGraph(
+                navController = navController,
+                viewModel = viewModel
+            )
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NewslyTheme {
-        Greeting("Android")
     }
 }
