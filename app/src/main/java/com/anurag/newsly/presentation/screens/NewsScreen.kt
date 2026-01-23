@@ -8,48 +8,46 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.anurag.newsly.presentation.navigation.NavRoutes
 import com.anurag.newsly.presentation.state.NewsEvent
 import com.anurag.newsly.presentation.state.NewsIntent
 import com.anurag.newsly.presentation.viewmodel.NewsViewModel
 
 @Composable
 fun NewsScreen(
-    navController: NavHostController,
-    viewModel: NewsViewModel
+    viewModel: NewsViewModel,
+    onNavigateToDetails: (String) -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
-    // Load data once
+    // Load once
     LaunchedEffect(Unit) {
         viewModel.processIntent(NewsIntent.LoadNews)
     }
 
-    // Handle one-time events
+    // Observe one-time events
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
+
                 is NewsEvent.NavigateToDetails -> {
-                    navController.navigate(
-                        NavRoutes.Details.createRoute(event.articleId)
-                    )
+                    onNavigateToDetails(event.articleId)
                 }
 
                 NewsEvent.NavigateToSettings -> {
-                    navController.navigate(NavRoutes.Settings.route)
+                    onNavigateToSettings()
                 }
 
                 is NewsEvent.ShowToast -> {
-                    // Later Snackbar
+                    // later snackbar
                 }
             }
         }
     }
 
-    // MAIN UI
     Scaffold(
         topBar = {
             TopAppBar(
@@ -76,7 +74,7 @@ fun NewsScreen(
             when {
                 state.isLoading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(androidx.compose.ui.Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
 
@@ -102,9 +100,7 @@ fun NewsScreen(
                                         text = article.title,
                                         style = MaterialTheme.typography.titleMedium
                                     )
-
                                     Spacer(modifier = Modifier.height(4.dp))
-
                                     Text(
                                         text = article.description,
                                         style = MaterialTheme.typography.bodyMedium
@@ -118,7 +114,7 @@ fun NewsScreen(
                 else -> {
                     Text(
                         text = "No news found",
-                        modifier = Modifier.align(androidx.compose.ui.Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }

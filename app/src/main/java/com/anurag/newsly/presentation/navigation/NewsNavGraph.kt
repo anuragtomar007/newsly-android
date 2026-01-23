@@ -21,15 +21,22 @@ fun NewsNavGraph(
         startDestination = NavRoutes.News.route
     ) {
 
-
+        // NEWS SCREEN
         composable(NavRoutes.News.route) {
             NewsScreen(
                 viewModel = viewModel,
-                navController = navController
+                onNavigateToDetails = { articleId ->
+                    navController.navigate(
+                        NavRoutes.Details.createRoute(articleId)
+                    )
+                },
+                onNavigateToSettings = {
+                    navController.navigate(NavRoutes.Settings.route)
+                }
             )
         }
 
-
+        // DETAILS SCREEN
         composable(
             route = NavRoutes.Details.route,
             arguments = listOf(
@@ -37,17 +44,24 @@ fun NewsNavGraph(
             )
         ) { backStackEntry ->
 
-            val articleId = backStackEntry.arguments?.getString("articleId")
+            val articleId =
+                backStackEntry.arguments?.getString("articleId") ?: ""
 
-            // Safety check
-            articleId?.let {
-                DetailsScreen(articleId = it)
-            }
+            DetailsScreen(
+                articleId = articleId,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
-
+        // SETTINGS SCREEN
         composable(NavRoutes.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
