@@ -14,19 +14,15 @@ import androidx.compose.ui.unit.dp
 import com.anurag.newsly.presentation.state.NewsEvent
 import com.anurag.newsly.presentation.state.NewsIntent
 import com.anurag.newsly.presentation.viewmodel.NewsViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NewsScreen(
-    viewModel: NewsViewModel,
+    viewModel: NewsViewModel ,
     onNavigateToDetails: (String) -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
-
-    // Load once
-    LaunchedEffect(Unit) {
-        viewModel.processIntent(NewsIntent.LoadNews)
-    }
 
     // Observe one-time events
     LaunchedEffect(Unit) {

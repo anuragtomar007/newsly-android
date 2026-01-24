@@ -17,10 +17,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.anurag.newsly.presentation.viewmodel.DetailsViewModel
 
 @Composable
 fun DetailsScreen(
-    articleId: String,
+    viewModel: DetailsViewModel,
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -46,7 +47,7 @@ fun DetailsScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Article Id: $articleId",
+                text = "Article Id: will load later",
                 style = MaterialTheme.typography.headlineSmall
             )
         }

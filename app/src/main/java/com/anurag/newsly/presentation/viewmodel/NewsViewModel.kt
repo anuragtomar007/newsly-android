@@ -21,6 +21,10 @@ class NewsViewModel(
     private val _event = MutableSharedFlow<NewsEvent>()
     val event = _event.asSharedFlow()
 
+    init {
+        processIntent(NewsIntent.LoadNews)
+    }
+
     // INTENT ENTRY POINT
     fun processIntent(intent: NewsIntent) {
         when (intent) {
