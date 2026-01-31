@@ -18,11 +18,9 @@ class NewsViewModel(
     private var isLastPage = false
     private var isLoadingMore = false
 
-    // STATE
     private val _state = MutableStateFlow(NewsState())
     val state: StateFlow<NewsState> = _state.asStateFlow()
 
-    // EVENT
     private val _event = MutableSharedFlow<NewsEvent>()
     val event = _event.asSharedFlow()
 
@@ -30,7 +28,6 @@ class NewsViewModel(
         processIntent(NewsIntent.LoadNews)
     }
 
-    // INTENT ENTRY POINT
     fun processIntent(intent: NewsIntent) {
         when (intent) {
 
@@ -107,39 +104,4 @@ class NewsViewModel(
             isLoadingMore = false
         }
     }
-
-
-    /*private fun loadNews() {
-        viewModelScope.launch {
-
-            _state.update { it.copy(isLoading = true) }
-
-            when (val result = getHeadlinesUseCase()) {
-
-                is NetworkResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            articles = result.data,
-                            error = null
-                        )
-                    }
-                }
-
-                is NetworkResult.Error -> {
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
-
-                    _event.emit(
-                        NewsEvent.ShowToast(result.message)
-                    )
-                }
-            }
-        }
-    }*/
-
 }

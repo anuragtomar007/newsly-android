@@ -29,7 +29,9 @@ fun NewsScreen(
             when (event) {
 
                 is NewsEvent.NavigateToDetails -> {
-                    onNavigateToDetails(event.articleId)
+                    event.articleId.takeIf { it.isNotEmpty() }?.let {
+                        onNavigateToDetails(it)
+                    }
                 }
 
                 NewsEvent.NavigateToSettings -> {
@@ -106,22 +108,26 @@ fun NewsScreen(
                                     .fillMaxWidth()
                                     .clickable {
                                         viewModel.processIntent(
-                                            NewsIntent.OnArticleClick(article.id)
+                                            NewsIntent.OnArticleClick(article.url ?: "")
                                         )
                                     }
                             ) {
                                 Column(
                                     modifier = Modifier.padding(16.dp)
                                 ) {
-                                    Text(
-                                        text = article.title,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
+                                    article.title?.let {
+                                        Text(
+                                            text = it,
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                    }
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = article.description,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    article.description?.let {
+                                        Text(
+                                            text = it,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
                                 }
                             }
                         }

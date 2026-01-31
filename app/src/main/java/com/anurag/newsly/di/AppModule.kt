@@ -1,5 +1,6 @@
 package com.anurag.newsly.di
 
+import com.anurag.newsly.data.repository.SettingsRepository
 import com.anurag.newsly.domain.usecase.GetHeadlinesUseCase
 import com.anurag.newsly.presentation.viewmodel.DetailsViewModel
 import com.anurag.newsly.presentation.viewmodel.NewsViewModel
@@ -15,15 +16,17 @@ val appModule = module {
         )
     }
 
+    single { SettingsRepository(get()) }
+
     viewModel {
         NewsViewModel(
             getHeadlinesUseCase = get()
         )
     }
 
-    viewModel { (articleId: String) ->
-        DetailsViewModel(articleId)
-    }
+    viewModel { SettingsViewModel(get()) }
 
-    viewModel { SettingsViewModel() }
+    viewModel { (articleId: String) ->
+        DetailsViewModel(get(), get(), articleId)
+    }
 }

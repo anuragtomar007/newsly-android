@@ -7,11 +7,12 @@ object NewsMapper {
 
     fun ArticleDto.toDomain(): Article {
         return Article(
-            id = (title ?: "") + (author ?: "") + (imageUrl ?: ""), // simple unique id
-            title = title ?: "",
-            description = description ?: "",
-            author = author ?: "Unknown",
-            imageUrl = imageUrl ?: ""
+            title = title,
+            description = description,
+            content = content,
+            url = url,
+            urlToImage = urlToImage,
+            publishedAt = publishedAt
         )
     }
 }

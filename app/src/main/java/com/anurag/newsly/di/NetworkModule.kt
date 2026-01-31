@@ -1,6 +1,5 @@
 package com.anurag.newsly.di
 
-import android.icu.text.ListFormatter
 import com.anurag.newsly.BuildConfig
 import com.anurag.newsly.data.remote.api.NewsApi
 import com.anurag.newsly.data.remote.api.NewsApiImpl

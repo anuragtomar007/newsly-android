@@ -2,6 +2,7 @@ package com.anurag.newsly.domain.repository
 
 import com.anurag.newsly.domain.model.Article
 import com.anurag.newsly.domain.util.NetworkResult
+import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
 
@@ -9,4 +10,6 @@ interface NewsRepository {
         country: String,
         page: Int
     ): NetworkResult<List<Article>>
+
+    fun getArticleByUrl(url: String): Flow<Article?>
 }

@@ -1,5 +1,6 @@
 package com.anurag.newsly.presentation.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -49,24 +50,20 @@ fun NewsNavGraph(
         composable(
             route = NavRoutes.Details.route,
             arguments = listOf(
-                navArgument("articleId") { type = NavType.StringType }
+                navArgument("articleUrl") { type = NavType.StringType }
             )
         ) { backStackEntry ->
 
-            val articleId =
-                backStackEntry.arguments?.getString("articleId") ?: ""
-
+            val articleUrl = backStackEntry.arguments?.getString("articleUrl") ?: return@composable
             val viewModel: DetailsViewModel = koinViewModel(
-                parameters = { parametersOf(articleId) }
+                parameters = { parametersOf(articleUrl) }
             )
-
             DetailsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // SETTINGS SCREEN
         composable(NavRoutes.Settings.route) {
             val settingsViewModel: SettingsViewModel = koinViewModel()
             SettingsScreen(
