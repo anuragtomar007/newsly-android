@@ -1,8 +1,6 @@
 package com.anurag.newsly.presentation.navigation
 
-import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,6 +9,7 @@ import androidx.navigation.navArgument
 import com.anurag.newsly.presentation.screens.DetailsScreen
 import com.anurag.newsly.presentation.screens.NewsScreen
 import com.anurag.newsly.presentation.screens.SettingsScreen
+import com.anurag.newsly.presentation.screens.ToolsScreen
 import com.anurag.newsly.presentation.viewmodel.DetailsViewModel
 import com.anurag.newsly.presentation.viewmodel.NewsViewModel
 import com.anurag.newsly.presentation.viewmodel.SettingsViewModel
@@ -26,7 +25,6 @@ fun NewsNavGraph(
         startDestination = NavRoutes.News.route
     ) {
 
-        // NEWS SCREEN
         composable(NavRoutes.News.route) {
             val newsViewModel: NewsViewModel = koinViewModel()
             NewsScreen(
@@ -46,7 +44,6 @@ fun NewsNavGraph(
             )
         }
 
-        // DETAILS SCREEN
         composable(
             route = NavRoutes.Details.route,
             arguments = listOf(
@@ -70,7 +67,16 @@ fun NewsNavGraph(
                 viewModel = settingsViewModel,
                 onBack = {
                     navController.popBackStack()
+                },
+                onOpenTools = {
+                    navController.navigate(NavRoutes.Tools.route)
                 }
+            )
+        }
+
+        composable(NavRoutes.Tools.route) {
+            ToolsScreen(
+                onBack = { navController.popBackStack() }
             )
         }
     }

@@ -13,4 +13,6 @@ sealed class NavRoutes(val route: String) {
     }
 
     object Settings : NavRoutes("settings")
+
+    object Tools : NavRoutes("tools")
 }

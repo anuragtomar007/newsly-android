@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,7 +31,8 @@ import com.anurag.newsly.presentation.viewmodel.SettingsViewModel
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onOpenTools: () -> Unit
 ) {
     val darkMode by viewModel.darkMode.collectAsState()
     val fontSizeLarge by viewModel.fontSizeLarge.collectAsState()
@@ -75,6 +79,15 @@ fun SettingsScreen(
                     checked = fontSizeLarge,
                     onCheckedChange = { viewModel.toggleFontSize() }
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = onOpenTools,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Open Contracts Demo (Tools)")
             }
         }
     }
