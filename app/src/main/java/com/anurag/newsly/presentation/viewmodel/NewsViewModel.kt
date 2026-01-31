@@ -6,6 +6,7 @@ import com.anurag.newsly.presentation.state.NewsIntent
 import com.anurag.newsly.presentation.state.NewsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anurag.newsly.domain.util.NetworkResult
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -58,27 +59,35 @@ class NewsViewModel(
 
     private fun loadNews() {
         viewModelScope.launch {
+
             _state.update { it.copy(isLoading = true) }
 
-            try {
-                val articles = getHeadlinesUseCase()
+            when (val result = getHeadlinesUseCase()) {
 
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        articles = articles
+                is NetworkResult.Success -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            articles = result.data,
+                            error = null
+                        )
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            error = result.message
+                        )
+                    }
+
+                    _event.emit(
+                        NewsEvent.ShowToast(result.message)
                     )
                 }
-
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(isLoading = false, error = e.message)
-                }
-
-                _event.emit(
-                    NewsEvent.ShowToast("Something went wrong")
-                )
             }
         }
     }
+
 }
