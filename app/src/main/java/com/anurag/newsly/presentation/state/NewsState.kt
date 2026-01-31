@@ -4,6 +4,7 @@ import com.anurag.newsly.domain.model.Article
 
 data class NewsState(
     val isLoading: Boolean = false,
+    val isLoadingMore: Boolean = false,
     val articles: List<Article> = emptyList(),
     val error: String? = null
 )

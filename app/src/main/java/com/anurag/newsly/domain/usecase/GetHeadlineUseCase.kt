@@ -7,7 +7,7 @@ import com.anurag.newsly.domain.util.NetworkResult
 class GetHeadlinesUseCase(
     private val repository: NewsRepository
 ) {
-    suspend operator fun invoke(): NetworkResult<List<Article>> {
+    suspend operator fun invoke(pages: Int): NetworkResult<List<Article>> {
         return repository.getTopHeadlines(
             country = "us",
             page = 1

@@ -14,6 +14,10 @@ class NewsViewModel(
     private val getHeadlinesUseCase: GetHeadlinesUseCase
 ) : ViewModel() {
 
+    private var currentPage = 1
+    private var isLastPage = false
+    private var isLoadingMore = false
+
     // STATE
     private val _state = MutableStateFlow(NewsState())
     val state: StateFlow<NewsState> = _state.asStateFlow()
@@ -41,6 +45,10 @@ class NewsViewModel(
             NewsIntent.OnSettingsClick -> {
                 emitNavigateToSettings()
             }
+
+            NewsIntent.LoadMore -> {
+                fetchNews(reset = false)
+            }
         }
     }
 
@@ -56,8 +64,52 @@ class NewsViewModel(
         }
     }
 
-
     private fun loadNews() {
+        currentPage = 1
+        fetchNews(reset = true)
+    }
+
+    private fun fetchNews(reset: Boolean) {
+        if (isLoadingMore || isLastPage) return
+
+        viewModelScope.launch {
+
+            isLoadingMore = true
+
+            val result = getHeadlinesUseCase(currentPage)
+
+            when(result) {
+
+                is NetworkResult.Success -> {
+
+                    val newArticles = result.data
+
+                    if (newArticles.isEmpty()) {
+                        isLastPage = true
+                    } else {
+                        currentPage++
+                    }
+
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            articles = if (reset) newArticles
+                            else it.articles + newArticles
+                        )
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    _event.emit(NewsEvent.ShowToast("Error loading news"))
+                }
+            }
+
+            isLoadingMore = false
+        }
+    }
+
+
+    /*private fun loadNews() {
         viewModelScope.launch {
 
             _state.update { it.copy(isLoading = true) }
@@ -88,6 +140,6 @@ class NewsViewModel(
                 }
             }
         }
-    }
+    }*/
 
 }

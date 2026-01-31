@@ -4,8 +4,7 @@ package com.anurag.newsly.presentation.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,17 +13,17 @@ import androidx.compose.ui.unit.dp
 import com.anurag.newsly.presentation.state.NewsEvent
 import com.anurag.newsly.presentation.state.NewsIntent
 import com.anurag.newsly.presentation.viewmodel.NewsViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NewsScreen(
-    viewModel: NewsViewModel ,
+    viewModel: NewsViewModel,
     onNavigateToDetails: (String) -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
-    // Observe one-time events
+    val listState = rememberLazyListState()
+
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
             when (event) {
@@ -38,8 +37,27 @@ fun NewsScreen(
                 }
 
                 is NewsEvent.ShowToast -> {
-                    // later snackbar
+                    // later snack bar
                 }
+            }
+        }
+    }
+
+    LaunchedEffect(listState) {
+
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        }.collect { lastVisibleIndex ->
+
+            val totalItems = state.articles.size
+
+            // Trigger when 3 items before end
+            if (lastVisibleIndex != null &&
+                lastVisibleIndex >= totalItems - 3 &&
+                !state.isLoadingMore &&
+                !state.isLoading
+            ) {
+                viewModel.processIntent(NewsIntent.LoadMore)
             }
         }
     }
@@ -76,6 +94,7 @@ fun NewsScreen(
 
                 state.articles.isNotEmpty() -> {
                     LazyColumn(
+                        state = listState,
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -91,7 +110,9 @@ fun NewsScreen(
                                         )
                                     }
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
+                                Column(
+                                    modifier = Modifier.padding(16.dp)
+                                ) {
                                     Text(
                                         text = article.title,
                                         style = MaterialTheme.typography.titleMedium
@@ -101,6 +122,19 @@ fun NewsScreen(
                                         text = article.description,
                                         style = MaterialTheme.typography.bodyMedium
                                     )
+                                }
+                            }
+                        }
+
+                        if (state.isLoadingMore) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
                                 }
                             }
                         }

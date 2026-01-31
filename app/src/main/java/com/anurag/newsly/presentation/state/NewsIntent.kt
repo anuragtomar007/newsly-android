@@ -4,5 +4,6 @@ sealed interface NewsIntent {
     object LoadNews : NewsIntent
     data class OnArticleClick(val articleId: String) : NewsIntent
     object OnSettingsClick : NewsIntent
+    object LoadMore : NewsIntent
 }
 
