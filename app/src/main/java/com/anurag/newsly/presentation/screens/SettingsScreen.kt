@@ -32,7 +32,8 @@ import com.anurag.newsly.presentation.viewmodel.SettingsViewModel
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
-    onOpenTools: () -> Unit
+    onOpenTools: () -> Unit,
+    onOpenCoil: () -> Unit
 ) {
     val darkMode by viewModel.darkMode.collectAsState()
     val fontSizeLarge by viewModel.fontSizeLarge.collectAsState()
@@ -88,6 +89,15 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Open Contracts Demo (Tools)")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = onOpenCoil,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Open Coil Playground")
             }
         }
     }

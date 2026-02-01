@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.anurag.newsly.presentation.screens.CoilPlaygroundScreen
 import com.anurag.newsly.presentation.screens.DetailsScreen
 import com.anurag.newsly.presentation.screens.NewsScreen
 import com.anurag.newsly.presentation.screens.SettingsScreen
@@ -70,6 +71,9 @@ fun NewsNavGraph(
                 },
                 onOpenTools = {
                     navController.navigate(NavRoutes.Tools.route)
+                },
+                onOpenCoil = {
+                    navController.navigate(NavRoutes.CoilPlayGround.route)
                 }
             )
         }
@@ -79,5 +83,12 @@ fun NewsNavGraph(
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable("coil_playground") {
+            CoilPlaygroundScreen {
+                navController.popBackStack()
+            }
+        }
+
     }
 }
